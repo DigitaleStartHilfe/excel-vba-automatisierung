@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel-Dashboard | Python Automatisierung</title>
+    <!-- Plotly für interaktive Diagramme -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Bootstrap für schönes Design -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #f0f4f8;
+        font-family: "Segoe UI", sans-serif;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 40px auto;
+      }
+      .upload-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        border: 2px dashed #dce4ee;
+        text-align: center;
+      }
+      .upload-box:hover {
+        border-color: #0f3460;
+      }
+      .btn-upload {
+        background: #0f3460;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+      }
+      .btn-upload:hover {
+        background: #16213e;
+        color: white;
+      }
+      .chart-box {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      .table-box {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 30px;
+        overflow-x: auto;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      .error-box {
+        background: #fde8e8;
+        color: #b33;
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
+      }
+      .badge-success {
+        background: #e0f5e9;
+        color: #1a7a4a;
+        padding: 5px 15px;
+        border-radius: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center mb-4" style="color: #0f3460">
+        📊 Excel-Dashboard <span style="color: #f5a623">Live-Demo</span>
+      </h1>
+      <p class="text-center text-muted">
+        Laden Sie eine Excel-Datei hoch und sehen Sie automatisch generierte
+        Diagramme und Tabellen.
+      </p>
+
+      <!-- Upload-Bereich -->
+      <div class="upload-box">
+        <form method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <input
+              type="file"
+              name="file"
+              accept=".xlsx,.xls"
+              class="form-control"
+              style="display: inline-block; width: auto"
+            />
+          </div>
+          <button type="submit" class="btn-upload">
+            <i class="fas fa-upload"></i> Excel hochladen & analysieren
+          </button>
+        </form>
+        <p class="text-muted mt-3" style="font-size: 0.9rem">
+          Unterstützte Formate: .xlsx, .xls | Maximale Dateigröße: 16 MB
+        </p>
+      </div>
+
+      <!-- Fehlermeldungen -->
+      {% if error %}
+      <div class="error-box">
+        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Erfolgsmeldung -->
+      {% if filename %}
+      <div class="text-center mt-3">
+        <span class="badge-success">
+          <i class="fas fa-check-circle"></i> Datei erfolgreich geladen: {{
+          filename }}
+        </span>
+        <a
+          href="/download/{{ filename }}"
+          class="btn btn-sm btn-outline-primary ms-2"
+        >
+          <i class="fas fa-download"></i> Download
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Diagramme -->
+      {% if graphs %}
+      <div class="row">
+        {% for graph_json in graphs %}
+        <div class="col-md-6">
+          <div class="chart-box">
+            <div id="chart{{ loop.index }}"></div>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                  var graphData = {{ graph_json|safe }};
+                  Plotly.newPlot('chart{{ loop.index }}', graphData.data, graphData.layout, {responsive: true});
+              });
+            </script>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Tabelle -->
+      {% if table %}
+      <div class="table-box">
+        <h5 class="mb-3">📋 Datenvorschau</h5>
+        {{ table|safe }}
+      </div>
+      {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </body>
+</html>
