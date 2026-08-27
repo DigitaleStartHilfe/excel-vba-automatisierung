@@ -1,0 +1,8 @@
+pandas
+openpyxl
+xlsxwriter
+xlwings
+flask
+plotly
+requests
+beautifulsoup4
