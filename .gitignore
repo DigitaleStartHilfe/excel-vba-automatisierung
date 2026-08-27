@@ -1,0 +1,19 @@
+# Virtuelle Umgebungen
+excel_env/
+venv/
+
+# Python-Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Lokale Excel-Dateien (Beispiel-Dateien, die beim Testen entstehen)
+*.xlsx
+*.xls
+
+# IDE-Ordner (VS Code)
+.vscode/
+
+# Systemdateien
+.DS_Store
+Thumbs.db
